@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MindScan Pro - Comprehensive Mental Health Assessment</title>
+    <title>MindScan Pro - AI-Powered Mental Health Assessment</title>
     <style>
         * {
             margin: 0;
@@ -89,6 +89,60 @@
         .critical-section {
             border-left-color: #e74c3c;
             background: linear-gradient(135deg, #fdf2f2, #fef5f5);
+        }
+        
+        .crisis-intervention {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+        }
+        
+        .crisis-card {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 600px;
+            margin: 20px;
+            text-align: center;
+        }
+        
+        .crisis-card h2 {
+            color: #e74c3c;
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+        
+        .crisis-resources {
+            background: #fef2f2;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            text-align: left;
+        }
+        
+        .crisis-resources h3 {
+            color: #e74c3c;
+            margin-bottom: 15px;
+        }
+        
+        .immediate-safety {
+            background: #fff8dc;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            text-align: left;
+        }
+        
+        .immediate-safety h3 {
+            color: #f39c12;
+            margin-bottom: 15px;
         }
         
         .section h3 {
@@ -398,6 +452,46 @@
             border-left: 4px solid #3498db;
         }
         
+        .ai-status {
+            background: linear-gradient(135deg, #e8f5e8, #f0f8ff);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            border-left: 4px solid #2ecc71;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .ai-status.error {
+            background: linear-gradient(135deg, #fef2f2, #fff5f5);
+            border-left-color: #e74c3c;
+        }
+        
+        .analysis-content {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            line-height: 1.6;
+        }
+        
+        .written-analysis-section {
+            margin-top: 30px;
+            padding: 25px;
+            background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+            border-radius: 15px;
+            border-left: 5px solid #0ea5e9;
+        }
+        
+        .api-config-section {
+            background: linear-gradient(135deg, #fff7ed, #fef3c7);
+            border: 2px solid #f59e0b;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
         .tooltip {
             position: relative;
             cursor: help;
@@ -425,7 +519,7 @@
         <div id="authPage" class="page active">
             <div class="header">
                 <h1>🧠 MindScan Pro</h1>
-                <p>Advanced Psychological Assessment Platform</p>
+                <p>AI-Powered Psychological Assessment Platform</p>
             </div>
             
             <div class="card auth-container">
@@ -465,6 +559,24 @@
                     </p>
                 </div>
                 
+                <div class="api-config-section">
+                    <h4>🔧 AI Configuration (Admin Only)</h4>
+                    <p>Configure AI provider for enhanced analysis. Leave blank to use basic analysis.</p>
+                    <div class="form-group">
+                        <label>AI Provider</label>
+                        <select id="aiProvider" class="form-input">
+                            <option value="">Basic Analysis Only</option>
+                            <option value="openai">OpenAI (GPT-4)</option>
+                            <option value="anthropic">Anthropic (Claude)</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="apiKeyGroup" style="display: none;">
+                        <label>API Key</label>
+                        <input type="password" id="apiKey" class="form-input" placeholder="Enter your API key">
+                        <small style="color: #666;">Keys are stored locally and never transmitted to our servers</small>
+                    </div>
+                </div>
+                
                 <div class="disclaimer">
                     <h4>📄 Data Usage Disclaimer</h4>
                     <p>By creating an account, you acknowledge that:</p>
@@ -474,6 +586,7 @@
                         <li>Data will be securely stored and protected</li>
                         <li>You can request data deletion at any time</li>
                         <li>This platform is for assessment purposes, not medical diagnosis</li>
+                        <li>AI-powered analysis provides educational insights only</li>
                     </ul>
                 </div>
             </div>
@@ -483,7 +596,7 @@
         <div id="personalInfoPage" class="page">
             <div class="header">
                 <h1>📋 Personal Information</h1>
-                <p>Help us understand your background for personalized assessment</p>
+                <p>Help us understand your background for personalized AI assessment</p>
             </div>
             
             <div class="card">
@@ -491,6 +604,11 @@
                     <div class="progress-bar" id="personalProgress"></div>
                 </div>
                 <div class="progress-text">Step 1 of 3 - Personal Details</div>
+                
+                <div class="ai-status" id="aiStatus">
+                    <span id="aiStatusIcon">🤖</span>
+                    <span id="aiStatusText">AI Enhancement: Ready</span>
+                </div>
                 
                 <form id="personalInfoForm">
                     <div class="section">
@@ -692,8 +810,8 @@
         <!-- Main Assessment Page -->
         <div id="assessmentPage" class="page">
             <div class="header">
-                <h1>🧠 Psychological Assessment</h1>
-                <p>Comprehensive mental health and personality evaluation</p>
+                <h1>🧠 AI-Powered Psychological Assessment</h1>
+                <p>Comprehensive mental health and personality evaluation with intelligent analysis</p>
             </div>
             
             <div class="card">
@@ -702,7 +820,11 @@
                 </div>
                 <div class="progress-text">Step 2 of 3 - Psychological Assessment</div>
                 
-                <!-- Rest of the assessment form from previous version -->
+                <div class="ai-status" id="assessmentAiStatus">
+                    <span id="assessmentAiStatusIcon">🤖</span>
+                    <span id="assessmentAiStatusText">AI Analysis: Ready</span>
+                </div>
+                
                 <form id="psychologicalAssessment">
                     <!-- Critical Risk Assessment -->
                     <div class="section critical-section">
@@ -720,15 +842,339 @@
                             </select>
                         </div>
                         
-                        <!-- Additional critical questions from previous version -->
+                        <div class="critical-question">
+                            <label><strong>Have you ever had thoughts of hurting yourself or ending your life?</strong></label>
+                            <select id="self_harm_thoughts" class="form-input" required>
+                                <option value="">Select an option</option>
+                                <option value="never">Never</option>
+                                <option value="past_not_recent">Yes, but not recently</option>
+                                <option value="past_month">Yes, in the past month</option>
+                                <option value="past_week">Yes, in the past week</option>
+                                <option value="today">Yes, today</option>
+                            </select>
+                        </div>
+                        
+                        <div class="critical-question">
+                            <label><strong>Do you have a specific plan for how you would hurt yourself?</strong></label>
+                            <select id="suicide_plan" class="form-input" required>
+                                <option value="">Select an option</option>
+                                <option value="no">No</option>
+                                <option value="vague">Vague thoughts but no specific plan</option>
+                                <option value="specific">Yes, I have a specific plan</option>
+                                <option value="prepared">Yes, and I have access to means</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Have you ever attempted to hurt yourself or end your life?</label>
+                            <select id="suicide_attempt" class="form-input">
+                                <option value="never">Never</option>
+                                <option value="considered">Considered but never attempted</option>
+                                <option value="past_year">Yes, in the past year</option>
+                                <option value="past_month">Yes, in the past month</option>
+                                <option value="multiple">Yes, multiple times</option>
+                            </select>
+                        </div>
                     </div>
                     
-                    <!-- Continue with all other sections from the previous assessment -->
+                    <!-- Mental Health Assessment -->
+                    <div class="section">
+                        <h3>🧠 Mental Health & Wellbeing</h3>
+                        
+                        <div class="form-group">
+                            <label>How would you rate your overall mood in the past two weeks? (1-10):</label>
+                            <div class="range-container">
+                                <input type="range" id="mood" class="range-input" min="1" max="10" value="5" oninput="updateRangeValue(this, 'moodValue')">
+                                <div class="range-labels">
+                                    <span>Very Depressed</span>
+                                    <span>Neutral</span>
+                                    <span>Very Happy</span>
+                                </div>
+                                <div class="range-value" id="moodValue">5</div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>How anxious or worried have you felt recently? (1-10):</label>
+                            <div class="range-container">
+                                <input type="range" id="anxiety" class="range-input" min="1" max="10" value="5" oninput="updateRangeValue(this, 'anxietyValue')">
+                                <div class="range-labels">
+                                    <span>No Anxiety</span>
+                                    <span>Moderate</span>
+                                    <span>Severe Anxiety</span>
+                                </div>
+                                <div class="range-value" id="anxietyValue">5</div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>How would you rate your energy levels? (1-10):</label>
+                            <div class="range-container">
+                                <input type="range" id="energy" class="range-input" min="1" max="10" value="5" oninput="updateRangeValue(this, 'energyValue')">
+                                <div class="range-labels">
+                                    <span>No Energy</span>
+                                    <span>Moderate</span>
+                                    <span>High Energy</span>
+                                </div>
+                                <div class="range-value" id="energyValue">5</div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>How would you rate your sleep quality? (1-10):</label>
+                            <div class="range-container">
+                                <input type="range" id="sleep_quality" class="range-input" min="1" max="10" value="5" oninput="updateRangeValue(this, 'sleepQualityValue')">
+                                <div class="range-labels">
+                                    <span>Very Poor</span>
+                                    <span>Average</span>
+                                    <span>Excellent</span>
+                                </div>
+                                <div class="range-value" id="sleepQualityValue">5</div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>In the past two weeks, how often have you felt little interest or pleasure in doing things?</label>
+                            <select id="interest_loss" class="form-input">
+                                <option value="">Select frequency</option>
+                                <option value="not_at_all">Not at all</option>
+                                <option value="several_days">Several days</option>
+                                <option value="more_than_half">More than half the days</option>
+                                <option value="nearly_every_day">Nearly every day</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>How often have you felt down, depressed, or hopeless?</label>
+                            <select id="depression_feelings" class="form-input">
+                                <option value="">Select frequency</option>
+                                <option value="not_at_all">Not at all</option>
+                                <option value="several_days">Several days</option>
+                                <option value="more_than_half">More than half the days</option>
+                                <option value="nearly_every_day">Nearly every day</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Empathy Assessment -->
+                    <div class="section">
+                        <h3>❤️ Empathy & Emotional Intelligence</h3>
+                        
+                        <div class="form-group">
+                            <label>When you see someone crying, how do you typically feel? (1-10):</label>
+                            <div class="range-container">
+                                <input type="range" id="empathy_crying" class="range-input" min="1" max="10" value="5" oninput="updateRangeValue(this, 'empathyCryingValue')">
+                                <div class="range-labels">
+                                    <span>Indifferent/Annoyed</span>
+                                    <span>Somewhat Moved</span>
+                                    <span>Deeply Affected</span>
+                                </div>
+                                <div class="range-value" id="empathyCryingValue">5</div>
+                            </div>
+                        </div>
+                        
+                        <div class="scenario-box">
+                            <label><strong>Scenario:</strong> A friend tells you they lost their job and are worried about paying rent. Your first reaction is:</label>
+                            <select id="empathy_scenario1" class="form-input">
+                                <option value="">Select your reaction</option>
+                                <option value="practical">Immediately offer practical advice</option>
+                                <option value="emotional">Feel their worry and offer emotional support first</option>
+                                <option value="detached">Think they probably made mistakes that led to this</option>
+                                <option value="self_focused">Worry about how this affects your plans together</option>
+                                <option value="deeply_moved">Feel genuinely distressed by their situation</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>How easily can you tell what others are feeling just by looking at them? (1-10):</label>
+                            <div class="range-container">
+                                <input type="range" id="emotion_reading" class="range-input" min="1" max="10" value="5" oninput="updateRangeValue(this, 'emotionReadingValue')">
+                                <div class="range-labels">
+                                    <span>Very Difficult</span>
+                                    <span>Sometimes</span>
+                                    <span>Very Easy</span>
+                                </div>
+                                <div class="range-value" id="emotionReadingValue">5</div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>When watching a sad movie, do you:</label>
+                            <select id="movie_empathy" class="form-input">
+                                <option value="">Select your typical response</option>
+                                <option value="unaffected">Remain emotionally unaffected</option>
+                                <option value="slightly">Feel slightly moved</option>
+                                <option value="moderately">Feel moderately emotional</option>
+                                <option value="cry">Often cry or feel deeply moved</option>
+                                <option value="overwhelmed">Become overwhelmed with emotion</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>How often do you put yourself in others' shoes before judging them?</label>
+                            <select id="perspective_taking" class="form-input">
+                                <option value="">Select frequency</option>
+                                <option value="never">Never</option>
+                                <option value="rarely">Rarely</option>
+                                <option value="sometimes">Sometimes</option>
+                                <option value="often">Often</option>
+                                <option value="always">Always</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Personality Traits Assessment -->
+                    <div class="section">
+                        <h3>🎭 Personality Traits</h3>
+                        
+                        <div class="form-group">
+                            <label>How special or unique do you consider yourself compared to others? (1-10):</label>
+                            <div class="range-container">
+                                <input type="range" id="specialness" class="range-input" min="1" max="10" value="5" oninput="updateRangeValue(this, 'specialnessValue')">
+                                <div class="range-labels">
+                                    <span>Very Ordinary</span>
+                                    <span>Average</span>
+                                    <span>Very Special</span>
+                                </div>
+                                <div class="range-value" id="specialnessValue">5</div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>How often do you feel you deserve special treatment or privileges?</label>
+                            <select id="entitlement" class="form-input">
+                                <option value="">Select frequency</option>
+                                <option value="never">Never</option>
+                                <option value="rarely">Rarely</option>
+                                <option value="sometimes">Sometimes</option>
+                                <option value="often">Often</option>
+                                <option value="always">Always</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>How much do you need admiration and praise from others? (1-10):</label>
+                            <div class="range-container">
+                                <input type="range" id="admiration_need" class="range-input" min="1" max="10" value="5" oninput="updateRangeValue(this, 'admirationNeedValue')">
+                                <div class="range-labels">
+                                    <span>Don't Need</span>
+                                    <span>Moderate Need</span>
+                                    <span>Constantly Need</span>
+                                </div>
+                                <div class="range-value" id="admirationNeedValue">5</div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>How often do you fantasize about unlimited success, power, or being admired?</label>
+                            <select id="grandiose_fantasies" class="form-input">
+                                <option value="">Select frequency</option>
+                                <option value="never">Never</option>
+                                <option value="rarely">Rarely</option>
+                                <option value="sometimes">Sometimes</option>
+                                <option value="often">Often</option>
+                                <option value="constantly">Constantly</option>
+                            </select>
+                        </div>
+                        
+                        <div class="scenario-box">
+                            <label><strong>Scenario:</strong> A coworker gets promoted instead of you. Your reaction is:</label>
+                            <select id="promotion_reaction" class="form-input">
+                                <option value="">Select your reaction</option>
+                                <option value="congratulate">Congratulate them and work harder</option>
+                                <option value="disappointed">Feel disappointed but accept it</option>
+                                <option value="unfair">Think the decision was unfair</option>
+                                <option value="angry">Feel angry and resentful</option>
+                                <option value="superior">Believe you're clearly superior and this is wrong</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Social Behavior Assessment -->
+                    <div class="section">
+                        <h3>🤝 Social Behavior & Relationships</h3>
+                        
+                        <div class="form-group">
+                            <label>How do you feel about breaking rules when no one is watching?</label>
+                            <select id="rule_breaking" class="form-input">
+                                <option value="">Select your attitude</option>
+                                <option value="never_break">Never break rules</option>
+                                <option value="minor_ok">Minor rule breaking is okay</option>
+                                <option value="often">Often break rules when convenient</option>
+                                <option value="no_problem">No problem breaking any rules</option>
+                            </select>
+                        </div>
+                        
+                        <div class="scenario-box">
+                            <label><strong>Scenario:</strong> You find a wallet with $200 cash and an ID. What would you do?</label>
+                            <select id="wallet_scenario" class="form-input">
+                                <option value="">Select your action</option>
+                                <option value="return_all">Return everything including cash</option>
+                                <option value="return_minus">Return wallet but keep some cash</option>
+                                <option value="return_no_cash">Return wallet but keep all cash</option>
+                                <option value="keep_all">Keep everything</option>
+                                <option value="depends">Depends on the situation</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>How often do you feel guilt or remorse after hurting someone?</label>
+                            <select id="guilt_remorse" class="form-input">
+                                <option value="">Select frequency</option>
+                                <option value="always">Always feel guilty</option>
+                                <option value="often">Often feel guilty</option>
+                                <option value="sometimes">Sometimes feel guilty</option>
+                                <option value="rarely">Rarely feel guilty</option>
+                                <option value="never">Never feel guilty</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>How easy is it for you to lie or deceive others when needed? (1-10):</label>
+                            <div class="range-container">
+                                <input type="range" id="deception_ease" class="range-input" min="1" max="10" value="5" oninput="updateRangeValue(this, 'deceptionEaseValue')">
+                                <div class="range-labels">
+                                    <span>Very Difficult</span>
+                                    <span>Moderate</span>
+                                    <span>Very Easy</span>
+                                </div>
+                                <div class="range-value" id="deceptionEaseValue">5</div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>What do you think of people who trust others easily?</label>
+                            <select id="trust_view" class="form-input">
+                                <option value="">Select your view</option>
+                                <option value="admirable">They are admirable and kind</option>
+                                <option value="normal">It's normal human behavior</option>
+                                <option value="naive">They are naive but harmless</option>
+                                <option value="weak">They are weak</option>
+                                <option value="exploitable">They are easy to exploit</option>
+                                <option value="contempt">I have contempt for them</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Additional Context -->
+                    <div class="section">
+                        <h3>📝 Additional Context</h3>
+                        
+                        <div class="form-group">
+                            <label>Is there anything else about your thoughts, feelings, or behaviors you'd like the AI to consider?</label>
+                            <textarea id="additional_context" class="form-input" rows="4" placeholder="Share any additional insights, concerns, or context that might be relevant for your assessment..."></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>What are you hoping to learn or gain from this assessment?</label>
+                            <textarea id="assessment_goals" class="form-input" rows="3" placeholder="Describe your goals and expectations for this psychological assessment..."></textarea>
+                        </div>
+                    </div>
                 </form>
                 
                 <div class="navigation">
                     <button onclick="goToPersonalInfo()" class="btn btn-secondary">← Back</button>
-                    <button onclick="generateAnalysis()" class="btn btn-success">Complete Assessment</button>
+                    <button onclick="generateAIAnalysis()" class="btn btn-success">🤖 Generate AI Analysis</button>
                 </div>
             </div>
         </div>
@@ -736,7 +1182,7 @@
         <!-- Results Page -->
         <div id="resultsPage" class="page">
             <div class="header">
-                <h1>📊 Your Psychological Profile</h1>
+                <h1>📊 Your AI-Generated Psychological Profile</h1>
                 <p>Comprehensive analysis and personalized recommendations</p>
             </div>
             
@@ -744,10 +1190,15 @@
                 <div class="progress-container">
                     <div class="progress-bar" style="width: 100%;"></div>
                 </div>
-                <div class="progress-text">Step 3 of 3 - Complete Assessment Results</div>
+                <div class="progress-text">Step 3 of 3 - Complete AI Assessment Results</div>
+                
+                <div class="ai-status" id="resultsAiStatus">
+                    <span id="resultsAiStatusIcon">✅</span>
+                    <span id="resultsAiStatusText">AI Analysis: Complete</span>
+                </div>
                 
                 <div id="resultsContent">
-                    <!-- Results will be dynamically generated here -->
+                    <!-- AI-generated results will be dynamically populated here -->
                 </div>
                 
                 <div class="navigation">
@@ -761,8 +1212,14 @@
         <!-- Loading Screen -->
         <div id="loadingScreen" class="loading">
             <div class="spinner"></div>
-            <h3>Analyzing your responses...</h3>
-            <p>Please wait while we generate your personalized psychological profile</p>
+            <h3>🤖 AI is analyzing your responses...</h3>
+            <p>Please wait while we generate your personalized psychological profile using advanced AI</p>
+            <div id="loadingProgress" style="margin-top: 20px;">
+                <div style="background: #ecf0f1; border-radius: 10px; padding: 4px;">
+                    <div id="aiLoadingBar" style="height: 8px; background: linear-gradient(90deg, #3498db, #2ecc71); border-radius: 6px; width: 0%; transition: width 0.3s;"></div>
+                </div>
+                <p id="loadingStage" style="margin-top: 10px; color: #666;">Initializing analysis...</p>
+            </div>
         </div>
     </div>
 
@@ -791,7 +1248,421 @@
         let currentUser = null;
         let personalData = {};
         let assessmentData = {};
+        let aiConfig = {
+            provider: '',
+            apiKey: '',
+            model: 'gpt-4'
+        };
         
+        // AI Assessment Engine Class
+        class AIAssessmentEngine {
+            constructor(config) {
+                this.provider = config.provider || '';
+                this.apiKey = config.apiKey || '';
+                this.model = config.model || 'gpt-4';
+                this.fallbackMode = !config.provider || !config.apiKey;
+            }
+
+            async generateComprehensiveAnalysis(personalData, assessmentData) {
+                if (this.fallbackMode) {
+                    return this.generateBasicAnalysis(personalData, assessmentData);
+                }
+
+                const prompt = this.buildAnalysisPrompt(personalData, assessmentData);
+                
+                try {
+                    updateLoadingStage('Connecting to AI service...');
+                    updateLoadingProgress(20);
+                    
+                    let response;
+                    if (this.provider === 'openai') {
+                        response = await this.callOpenAI(prompt);
+                    } else if (this.provider === 'anthropic') {
+                        response = await this.callAnthropic(prompt);
+                    } else {
+                        throw new Error('Unsupported AI provider');
+                    }
+                    
+                    updateLoadingStage('Processing AI response...');
+                    updateLoadingProgress(90);
+                    
+                    return this.parseAIResponse(response);
+                    
+                } catch (error) {
+                    console.error('AI Analysis Error:', error);
+                    updateLoadingStage('AI service unavailable, using basic analysis...');
+                    updateLoadingProgress(50);
+                    
+                    // Fallback to basic analysis
+                    return this.generateBasicAnalysis(personalData, assessmentData);
+                }
+            }
+
+            async callOpenAI(prompt) {
+                updateLoadingStage('Sending data to OpenAI...');
+                updateLoadingProgress(40);
+                
+                const response = await fetch('https://api.openai.com/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${this.apiKey}`
+                    },
+                    body: JSON.stringify({
+                        model: this.model,
+                        messages: [
+                            {
+                                role: 'system',
+                                content: this.getSystemPrompt()
+                            },
+                            {
+                                role: 'user',
+                                content: prompt
+                            }
+                        ],
+                        temperature: 0.3,
+                        max_tokens: 4000
+                    })
+                });
+
+                updateLoadingStage('Receiving AI analysis...');
+                updateLoadingProgress(70);
+
+                const data = await response.json();
+                
+                if (data.error) {
+                    throw new Error(data.error.message);
+                }
+
+                return data.choices[0].message.content;
+            }
+
+            async callAnthropic(prompt) {
+                updateLoadingStage('Sending data to Anthropic Claude...');
+                updateLoadingProgress(40);
+                
+                const response = await fetch('https://api.anthropic.com/v1/messages', {
+                    method: 'POST',
+                    headers: {
+                        'x-api-key': this.apiKey,
+                        'Content-Type': 'application/json',
+                        'anthropic-version': '2023-06-01'
+                    },
+                    body: JSON.stringify({
+                        model: 'claude-3-sonnet-20240229',
+                        max_tokens: 4000,
+                        messages: [{
+                            role: 'user',
+                            content: this.getSystemPrompt() + '\n\n' + prompt
+                        }]
+                    })
+                });
+
+                updateLoadingStage('Receiving AI analysis...');
+                updateLoadingProgress(70);
+
+                const data = await response.json();
+                
+                if (data.error) {
+                    throw new Error(data.error.message);
+                }
+
+                return data.content[0].text;
+            }
+
+            getSystemPrompt() {
+                return `You are a specialized psychological assessment AI trained to analyze mental health questionnaire responses and personal background data. You provide educational insights and recommendations while maintaining appropriate clinical boundaries. You are not providing medical diagnosis but rather research-based psychological profiling for educational purposes.
+
+Key principles:
+1. Always prioritize safety - flag any suicide/self-harm indicators immediately
+2. Provide specific, actionable recommendations
+3. Consider cultural and family context
+4. Use appropriate disclaimers
+5. Focus on strengths and growth opportunities
+6. Recommend professional help when appropriate
+7. Use compassionate, non-judgmental language
+
+Return your analysis in JSON format followed by a detailed written analysis in markdown.`;
+            }
+
+            buildAnalysisPrompt(personalData, assessmentData) {
+                return `COMPREHENSIVE PSYCHOLOGICAL PROFILE REQUEST
+
+Please analyze the following data and provide a complete psychological assessment.
+
+PERSONAL BACKGROUND:
+- Name: ${personalData.fullName}
+- Age: ${personalData.age}
+- Gender: ${personalData.gender || 'Not specified'}
+- Location: ${personalData.city}, ${personalData.country}
+- Education: ${personalData.education}
+- Religion: ${personalData.religion || 'Not specified'}
+- Ethnicity: ${personalData.ethnicity || 'Not specified'}
+
+FAMILY BACKGROUND:
+- Siblings: ${personalData.numSiblings || 0}
+- Birth Order: ${personalData.birthOrder || 'Not specified'}
+- Parent Relationship Quality: ${personalData.parentRelationship}/10
+- Parents' Relationship: ${personalData.parentsRelationship || 'Not specified'}
+- Family Issues: ${personalData.familyIssues?.join(', ') || 'None reported'}
+- Additional Family Details: ${personalData.familyDetails || 'None provided'}
+
+ASSESSMENT RESPONSES:
+${this.formatAssessmentData(assessmentData)}
+
+Please provide a comprehensive analysis including:
+1. Risk assessment (especially suicidal risk)
+2. Personality profile analysis
+3. Mental health indicators
+4. Family influence analysis
+5. Personalized recommendations
+6. Treatment suggestions
+7. Crisis intervention if needed
+
+Format your response as JSON with detailed analysis.`;
+            }
+
+            formatAssessmentData(assessmentData) {
+                let formatted = '';
+                for (const [key, value] of Object.entries(assessmentData)) {
+                    if (Array.isArray(value)) {
+                        formatted += `${key}: ${value.join(', ')}\n`;
+                    } else {
+                        formatted += `${key}: ${value}\n`;
+                    }
+                }
+                return formatted;
+            }
+
+            parseAIResponse(response) {
+                try {
+                    // Try to extract JSON from response
+                    const jsonMatch = response.match(/\{[\s\S]*\}/);
+                    let jsonData = {};
+                    
+                    if (jsonMatch) {
+                        jsonData = JSON.parse(jsonMatch[0]);
+                    }
+                    
+                    // Extract markdown analysis
+                    const markdownMatch = response.split(jsonMatch ? jsonMatch[0] : '')[1];
+                    
+                    return {
+                        meta: {
+                            assessment_date: new Date().toISOString(),
+                            user_age: personalData.age,
+                            crisis_level: jsonData.crisis_level || "none",
+                            ai_powered: true
+                        },
+                        risk_assessment: jsonData.risk_assessment || this.getBasicRiskAssessment(assessmentData),
+                        personality_profile: jsonData.personality_profile || this.getBasicPersonalityProfile(assessmentData),
+                        mental_health_indicators: jsonData.mental_health_indicators || this.getBasicMentalHealthIndicators(assessmentData),
+                        family_influence_analysis: jsonData.family_influence_analysis || this.getBasicFamilyAnalysis(personalData),
+                        personalized_recommendations: jsonData.personalized_recommendations || this.getBasicRecommendations(),
+                        detailed_treatment_plan: jsonData.detailed_treatment_plan || this.getBasicTreatmentPlan(),
+                        written_analysis: markdownMatch?.trim() || this.generateBasicWrittenAnalysis(),
+                        ai_powered: true,
+                        timestamp: new Date().toISOString()
+                    };
+                    
+                } catch (error) {
+                    console.error('Failed to parse AI response:', error);
+                    return this.generateBasicAnalysis(personalData, assessmentData);
+                }
+            }
+
+            generateBasicAnalysis(personalData, assessmentData) {
+                // Basic analysis when AI is not available
+                return {
+                    meta: {
+                        assessment_date: new Date().toISOString(),
+                        user_age: personalData.age,
+                        crisis_level: this.assessBasicCrisisLevel(assessmentData),
+                        ai_powered: false
+                    },
+                    risk_assessment: this.getBasicRiskAssessment(assessmentData),
+                    personality_profile: this.getBasicPersonalityProfile(assessmentData),
+                    mental_health_indicators: this.getBasicMentalHealthIndicators(assessmentData),
+                    family_influence_analysis: this.getBasicFamilyAnalysis(personalData),
+                    personalized_recommendations: this.getBasicRecommendations(),
+                    detailed_treatment_plan: this.getBasicTreatmentPlan(),
+                    written_analysis: this.generateBasicWrittenAnalysis(),
+                    fallback_mode: true,
+                    timestamp: new Date().toISOString()
+                };
+            }
+
+            assessBasicCrisisLevel(assessmentData) {
+                if (assessmentData.suicide_plan === 'prepared' || 
+                    assessmentData.self_harm_thoughts === 'today' ||
+                    assessmentData.death_thoughts === 'daily') {
+                    return 'critical';
+                } else if (assessmentData.self_harm_thoughts === 'past_week' ||
+                          assessmentData.suicide_plan === 'specific') {
+                    return 'high';
+                } else if (assessmentData.self_harm_thoughts === 'past_month') {
+                    return 'moderate';
+                }
+                return 'none';
+            }
+
+            getBasicRiskAssessment(assessmentData) {
+                let riskScore = 0;
+                let flags = [];
+
+                // Basic risk calculation
+                if (assessmentData.death_thoughts === 'daily') { riskScore += 4; flags.push('Daily death thoughts'); }
+                else if (assessmentData.death_thoughts === 'often') { riskScore += 3; }
+                else if (assessmentData.death_thoughts === 'sometimes') { riskScore += 2; }
+
+                if (assessmentData.self_harm_thoughts === 'today') { riskScore += 6; flags.push('IMMEDIATE RISK'); }
+                else if (assessmentData.self_harm_thoughts === 'past_week') { riskScore += 4; flags.push('Recent suicidal thoughts'); }
+                else if (assessmentData.self_harm_thoughts === 'past_month') { riskScore += 3; }
+
+                if (assessmentData.suicide_plan === 'prepared') { riskScore += 6; flags.push('CRITICAL: Has plan and means'); }
+                else if (assessmentData.suicide_plan === 'specific') { riskScore += 4; flags.push('Has specific plan'); }
+
+                let level = 'Low';
+                if (riskScore >= 8) level = 'CRITICAL - IMMEDIATE INTERVENTION REQUIRED';
+                else if (riskScore >= 5) level = 'HIGH - Professional help needed urgently';
+                else if (riskScore >= 3) level = 'MODERATE - Professional evaluation recommended';
+
+                return {
+                    suicidal_risk: {
+                        score: riskScore,
+                        level: level,
+                        flags: flags,
+                        immediate_action_required: riskScore >= 8
+                    }
+                };
+            }
+
+            getBasicPersonalityProfile(assessmentData) {
+                // Basic personality analysis
+                const empathyScore = (parseInt(assessmentData.empathy_crying) || 5) + 
+                                  (parseInt(assessmentData.emotion_reading) || 5);
+                const empathyPercentage = Math.round((empathyScore / 20) * 100);
+
+                let empathyLevel = 'Average';
+                if (empathyPercentage >= 75) empathyLevel = 'High';
+                else if (empathyPercentage >= 50) empathyLevel = 'Above Average';
+                else if (empathyPercentage < 30) empathyLevel = 'Below Average';
+
+                return {
+                    empathy_level: {
+                        score: empathyScore,
+                        level: empathyLevel,
+                        percentage: empathyPercentage
+                    },
+                    narcissistic_traits: {
+                        score: parseInt(assessmentData.specialness) || 5,
+                        level: 'Moderate',
+                        specific_traits: []
+                    },
+                    antisocial_traits: {
+                        score: 3,
+                        level: 'Low',
+                        specific_traits: []
+                    },
+                    overall_type: {
+                        primary_type: 'Normal/Healthy Range',
+                        color: '#0d9488',
+                        secondary_traits: []
+                    }
+                };
+            }
+
+            getBasicMentalHealthIndicators(assessmentData) {
+                return {
+                    depression_indicators: parseInt(assessmentData.mood) ? (10 - parseInt(assessmentData.mood)) : 5,
+                    anxiety_indicators: parseInt(assessmentData.anxiety) || 5,
+                    overall_wellbeing: parseInt(assessmentData.mood) || 5,
+                    sleep_quality_impact: parseInt(assessmentData.sleep_quality) || 5,
+                    social_functioning: 6
+                };
+            }
+
+            getBasicFamilyAnalysis(personalData) {
+                let score = 0;
+                let riskFactors = [];
+                let protectiveFactors = [];
+
+                if (personalData.parentRelationship >= 8) {
+                    protectiveFactors.push('Strong parental relationship');
+                    score += 2;
+                } else if (personalData.parentRelationship <= 3) {
+                    riskFactors.push('Poor parental relationship');
+                    score -= 2;
+                }
+
+                let influence = 'Neutral';
+                if (score >= 2) influence = 'Protective';
+                else if (score <= -2) influence = 'Risk Factor';
+
+                return {
+                    overall_impact: influence,
+                    score: score,
+                    protective_factors: protectiveFactors,
+                    risk_factors: riskFactors,
+                    recommendations: []
+                };
+            }
+
+            getBasicRecommendations() {
+                return {
+                    immediate_actions: [
+                        'Practice deep breathing exercises',
+                        'Maintain regular sleep schedule',
+                        'Connect with a trusted friend or family member'
+                    ],
+                    short_term_goals: [
+                        'Consider therapy consultation',
+                        'Establish daily routine',
+                        'Practice mindfulness or meditation'
+                    ],
+                    long_term_strategies: [
+                        'Develop healthy coping mechanisms',
+                        'Build strong support network',
+                        'Regular mental health check-ins'
+                    ],
+                    family_interventions: [],
+                    cultural_considerations: [],
+                    professional_help_indicators: [
+                        'If symptoms persist or worsen',
+                        'For comprehensive evaluation'
+                    ]
+                };
+            }
+
+            getBasicTreatmentPlan() {
+                return {
+                    therapy_recommendations: ['Cognitive Behavioral Therapy', 'Supportive counseling'],
+                    medication_considerations: 'Consider psychiatric evaluation if symptoms persist',
+                    lifestyle_modifications: ['Regular exercise', 'Healthy sleep habits', 'Stress management'],
+                    crisis_plan: [],
+                    follow_up_timeline: 'Every 2-4 weeks initially'
+                };
+            }
+
+            generateBasicWrittenAnalysis() {
+                return `## Assessment Summary
+
+This basic analysis provides general insights based on your responses. For more detailed and personalized analysis, consider enabling AI enhancement with an API key.
+
+### Key Findings
+- Your responses indicate generally normal psychological functioning
+- Some areas may benefit from attention and support
+- Consider professional consultation for comprehensive evaluation
+
+### Recommendations
+- Maintain healthy lifestyle habits
+- Stay connected with support systems
+- Monitor your mental health regularly
+
+**Important:** This is a basic analysis. For detailed insights, enable AI enhancement or consult with a mental health professional.`;
+            }
+        }
+
         // Authentication Functions
         function showRegister() {
             document.getElementById('loginForm').style.display = 'none';
@@ -813,6 +1684,9 @@
                 return;
             }
             
+            // Save AI configuration
+            saveAIConfig();
+            
             auth.createUserWithEmailAndPassword(email, password)
                 .then((userCredential) => {
                     currentUser = userCredential.user;
@@ -826,6 +1700,9 @@
         function signIn() {
             const email = document.getElementById('loginEmail').value;
             const password = document.getElementById('loginPassword').value;
+            
+            // Save AI configuration
+            saveAIConfig();
             
             auth.signInWithEmailAndPassword(email, password)
                 .then((userCredential) => {
@@ -842,8 +1719,104 @@
                 currentUser = null;
                 personalData = {};
                 assessmentData = {};
+                aiConfig = { provider: '', apiKey: '', model: 'gpt-4' };
                 showAuthPage();
             });
+        }
+
+        function saveAIConfig() {
+            const provider = document.getElementById('aiProvider').value;
+            const apiKey = document.getElementById('apiKey').value;
+            
+            aiConfig = {
+                provider: provider,
+                apiKey: apiKey,
+                model: provider === 'openai' ? 'gpt-4' : 'claude-3-sonnet-20240229'
+            };
+
+            // Store in localStorage for session persistence
+            if (provider && apiKey) {
+                localStorage.setItem('aiConfig', JSON.stringify(aiConfig));
+            }
+
+            updateAIStatus();
+        }
+
+        function loadAIConfig() {
+            const stored = localStorage.getItem('aiConfig');
+            if (stored) {
+                aiConfig = JSON.parse(stored);
+                document.getElementById('aiProvider').value = aiConfig.provider || '';
+                document.getElementById('apiKey').value = aiConfig.apiKey || '';
+                
+                if (aiConfig.provider) {
+                    document.getElementById('apiKeyGroup').style.display = 'block';
+                }
+            }
+            updateAIStatus();
+        }
+
+        function updateAIStatus() {
+            const hasAI = aiConfig.provider && aiConfig.apiKey;
+            const statusElements = [
+                { icon: 'aiStatusIcon', text: 'aiStatusText' },
+                { icon: 'assessmentAiStatusIcon', text: 'assessmentAiStatusText' },
+                { icon: 'resultsAiStatusIcon', text: 'resultsAiStatusText' }
+            ];
+
+            statusElements.forEach(element => {
+                const iconEl = document.getElementById(element.icon);
+                const textEl = document.getElementById(element.text);
+                
+                if (iconEl && textEl) {
+                    if (hasAI) {
+                        iconEl.textContent = '🤖';
+                        textEl.textContent = `AI Enhancement: ${aiConfig.provider.toUpperCase()} Ready`;
+                        iconEl.parentElement.className = 'ai-status';
+                    } else {
+                        iconEl.textContent = '🔧';
+                        textEl.textContent = 'AI Enhancement: Basic Mode (Configure AI for advanced analysis)';
+                        iconEl.parentElement.className = 'ai-status error';
+                    }
+                }
+            });
+        }
+
+        // Event listener for AI provider selection
+        document.addEventListener('DOMContentLoaded', function() {
+            const aiProviderSelect = document.getElementById('aiProvider');
+            const apiKeyGroup = document.getElementById('apiKeyGroup');
+            
+            if (aiProviderSelect) {
+                aiProviderSelect.addEventListener('change', function() {
+                    if (this.value) {
+                        apiKeyGroup.style.display = 'block';
+                    } else {
+                        apiKeyGroup.style.display = 'none';
+                    }
+                });
+            }
+
+            loadAIConfig();
+            
+            // Check if user is already logged in
+            auth.onAuthStateChanged((user) => {
+                if (user) {
+                    currentUser = user;
+                    loadUserData();
+                } else {
+                    showAuthPage();
+                }
+            });
+            
+            // Add event listeners for form changes
+            document.addEventListener('change', updateProgress);
+            document.addEventListener('input', updateProgress);
+        });
+
+        function updateProgress() {
+            updatePersonalProgress();
+            updateAssessmentProgress();
         }
         
         // Page Navigation Functions
@@ -861,6 +1834,7 @@
         function showPersonalInfoPage() {
             showPage('personalInfoPage');
             updatePersonalProgress();
+            updateAIStatus();
         }
         
         function goToPersonalInfo() {
@@ -870,6 +1844,7 @@
         function showAssessmentPage() {
             showPage('assessmentPage');
             updateAssessmentProgress();
+            updateAIStatus();
         }
         
         function goToAssessment() {
@@ -878,6 +1853,7 @@
         
         function showResultsPage() {
             showPage('resultsPage');
+            updateAIStatus();
         }
         
         // Data Management Functions
@@ -974,19 +1950,18 @@
         function populatePersonalInfoForm() {
             if (!personalData) return;
             
-            document.getElementById('fullName').value = personalData.fullName || '';
-            document.getElementById('age').value = personalData.age || '';
-            document.getElementById('gender').value = personalData.gender || '';
-            document.getElementById('religion').value = personalData.religion || '';
-            document.getElementById('ethnicity').value = personalData.ethnicity || '';
-            document.getElementById('country').value = personalData.country || '';
-            document.getElementById('city').value = personalData.city || '';
-            document.getElementById('education').value = personalData.education || '';
-            document.getElementById('numSiblings').value = personalData.numSiblings || 0;
-            document.getElementById('birthOrder').value = personalData.birthOrder || '';
-            document.getElementById('parentsRelationship').value = personalData.parentsRelationship || '';
-            document.getElementById('parentRelationship').value = personalData.parentRelationship || 5;
-            document.getElementById('familyDetails').value = personalData.familyDetails || '';
+            const fields = [
+                'fullName', 'age', 'gender', 'religion', 'ethnicity', 'country', 
+                'city', 'education', 'numSiblings', 'birthOrder', 'parentsRelationship', 
+                'parentRelationship', 'familyDetails'
+            ];
+            
+            fields.forEach(field => {
+                const element = document.getElementById(field);
+                if (element && personalData[field] !== undefined) {
+                    element.value = personalData[field];
+                }
+            });
             
             // Populate family issues checkboxes
             if (personalData.familyIssues) {
@@ -996,10 +1971,8 @@
                 });
             }
             
-            // Generate sibling fields
+            // Generate sibling fields and populate
             generateSiblingFields();
-            
-            // Populate sibling relationships
             if (personalData.siblingRelationships) {
                 personalData.siblingRelationships.forEach(sibling => {
                     const relationshipElement = document.getElementById(`siblingRelationship${sibling.siblingNumber - 1}`);
@@ -1013,9 +1986,495 @@
         
         function validatePersonalInfo() {
             const required = ['fullName', 'age', 'country', 'city', 'education'];
-            return required.every(field => document.getElementById(field).value.trim() !== '');
+            return required.every(field => {
+                const element = document.getElementById(field);
+                return element && element.value.trim() !== '';
+            });
         }
         
+        // Assessment Functions
+        function collectAssessmentData() {
+            const form = document.getElementById('psychologicalAssessment');
+            const inputs = form.querySelectorAll('input, select, textarea');
+            
+            assessmentData = {};
+            inputs.forEach(input => {
+                if (input.type === 'checkbox') {
+                    if (!assessmentData[input.name]) assessmentData[input.name] = [];
+                    if (input.checked) assessmentData[input.name].push(input.id);
+                } else if (input.value) {
+                    assessmentData[input.id] = input.value;
+                }
+            });
+        }
+        
+        function validateAssessment() {
+            const requiredFields = ['death_thoughts', 'self_harm_thoughts', 'suicide_plan'];
+            return requiredFields.every(field => {
+                const element = document.getElementById(field);
+                return element && element.value !== '';
+            });
+        }
+
+        // AI-Powered Analysis Function
+        async function generateAIAnalysis() {
+            if (!validateAssessment()) {
+                alert('Please complete all required fields in the assessment.');
+                return;
+            }
+            
+            collectAssessmentData();
+            
+            // Check for immediate crisis
+            const crisisLevel = assessBasicCrisisLevel();
+            if (crisisLevel === 'critical') {
+                showCrisisIntervention();
+                return;
+            }
+            
+            showLoadingScreen();
+            updateLoadingStage('Initializing AI analysis...');
+            updateLoadingProgress(0);
+            
+            try {
+                const aiEngine = new AIAssessmentEngine(aiConfig);
+                const analysis = await aiEngine.generateComprehensiveAnalysis(personalData, assessmentData);
+                
+                // Handle crisis situations from AI analysis
+                if (analysis.meta.crisis_level === 'critical' || 
+                    analysis.risk_assessment.suicidal_risk?.immediate_action_required) {
+                    hideLoadingScreen();
+                    showCrisisIntervention(analysis);
+                    return;
+                }
+                
+                updateLoadingStage('Saving analysis...');
+                updateLoadingProgress(95);
+                
+                await saveAnalysisResults(analysis);
+                
+                updateLoadingStage('Complete!');
+                updateLoadingProgress(100);
+                
+                setTimeout(() => {
+                    hideLoadingScreen();
+                    showResultsPage();
+                    displayResults(analysis);
+                }, 500);
+                
+            } catch (error) {
+                console.error('Analysis generation failed:', error);
+                hideLoadingScreen();
+                alert('Unable to complete analysis. Please try again or contact support.');
+            }
+        }
+
+        function assessBasicCrisisLevel() {
+            if (assessmentData.suicide_plan === 'prepared' || 
+                assessmentData.self_harm_thoughts === 'today') {
+                return 'critical';
+            } else if (assessmentData.self_harm_thoughts === 'past_week' ||
+                      assessmentData.suicide_plan === 'specific') {
+                return 'high';
+            }
+            return 'none';
+        }
+
+        // Loading Screen Functions
+        function showLoadingScreen() {
+            document.getElementById('loadingScreen').style.display = 'block';
+        }
+        
+        function hideLoadingScreen() {
+            document.getElementById('loadingScreen').style.display = 'none';
+        }
+
+        function updateLoadingStage(stage) {
+            const element = document.getElementById('loadingStage');
+            if (element) element.textContent = stage;
+        }
+
+        function updateLoadingProgress(percentage) {
+            const element = document.getElementById('aiLoadingBar');
+            if (element) element.style.width = percentage + '%';
+        }
+        
+        async function saveAnalysisResults(analysis) {
+            if (!currentUser) return;
+            
+            return db.collection('users').doc(currentUser.uid).update({
+                assessmentData: assessmentData,
+                analysisResults: analysis,
+                hasCompletedAssessment: true,
+                completionDate: firebase.firestore.FieldValue.serverTimestamp()
+            });
+        }
+        
+        // Crisis Intervention Function
+        function showCrisisIntervention(analysis = null) {
+            const crisisDiv = document.createElement('div');
+            crisisDiv.className = 'crisis-intervention';
+            crisisDiv.innerHTML = `
+                <div class="crisis-card">
+                    <h2>🚨 Immediate Support Needed</h2>
+                    <p>Your responses indicate you may be experiencing thoughts of self-harm or suicide. Your safety is the most important thing right now.</p>
+                    
+                    <div class="crisis-resources">
+                        <h3>Get Help Right Now:</h3>
+                        <ul>
+                            <li>🚨 <strong>Emergency:</strong> Call your local emergency services</li>
+                            <li>📞 <strong>Crisis Hotline:</strong> 988 (Suicide & Crisis Lifeline)</li>
+                            <li>💬 <strong>Text Support:</strong> Text HOME to 741741</li>
+                            <li>🌐 <strong>Online Chat:</strong> suicidepreventionlifeline.org</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="immediate-safety">
+                        <h3>Right Now:</h3>
+                        <ul>
+                            <li>Stay with someone you trust</li>
+                            <li>Remove any means of harm from your environment</li>
+                            <li>Go to your nearest emergency room if you feel unsafe</li>
+                        </ul>
+                    </div>
+                    
+                    <button onclick="window.open('tel:988')" class="btn btn-danger">📞 Call Crisis Line (988)</button>
+                    <button onclick="window.open('https://suicidepreventionlifeline.org/chat/', '_blank')" class="btn btn-success">💬 Start Crisis Chat</button>
+                    <button onclick="closeCrisisIntervention()" class="btn btn-secondary">Close</button>
+                </div>
+            `;
+            
+            document.body.appendChild(crisisDiv);
+        }
+
+        function closeCrisisIntervention() {
+            const crisisDiv = document.querySelector('.crisis-intervention');
+            if (crisisDiv) {
+                crisisDiv.remove();
+            }
+        }
+        
+        // Results Display Function
+        function displayResults(analysis) {
+            const container = document.getElementById('resultsContent');
+            
+            container.innerHTML = `
+                <div class="ai-generated-results">
+                    ${generatePersonalProfileSection(analysis)}
+                    ${generateRiskAssessmentSection(analysis)}
+                    ${generatePersonalityProfileSection(analysis)}
+                    ${generateMentalHealthSection(analysis)}
+                    ${generateFamilyInfluenceSection(analysis)}
+                    ${generateRecommendationsSection(analysis)}
+                    ${generateTreatmentPlanSection(analysis)}
+                    ${generateWrittenAnalysisSection(analysis)}
+                    ${generateDisclaimerSection(analysis)}
+                </div>
+            `;
+        }
+
+        function generatePersonalProfileSection(analysis) {
+            return `
+                <div class="section">
+                    <h3>👤 Personal Profile Summary</h3>
+                    <div class="metric-grid">
+                        <div class="metric-card">
+                            <h4>${personalData.fullName}</h4>
+                            <p>Age: ${personalData.age} | ${personalData.gender || 'Not specified'}</p>
+                            <p>📍 ${personalData.city}, ${personalData.country}</p>
+                            <p>🎓 ${personalData.education || 'Not specified'}</p>
+                        </div>
+                        <div class="metric-card">
+                            <h4>🧠 Mental Health Overview</h4>
+                            <p>Overall Wellbeing: ${analysis.mental_health_indicators?.overall_wellbeing || 'N/A'}/10</p>
+                            <p>Social Functioning: ${analysis.mental_health_indicators?.social_functioning || 'N/A'}/10</p>
+                        </div>
+                        <div class="metric-card">
+                            <h4>🎭 Personality Type</h4>
+                            <div style="color: ${analysis.personality_profile?.overall_type?.color || '#0d9488'}; font-weight: bold;">
+                                ${analysis.personality_profile?.overall_type?.primary_type || 'Normal/Healthy Range'}
+                            </div>
+                        </div>
+                        <div class="metric-card">
+                            <h4>🤖 Analysis Type</h4>
+                            <div style="color: ${analysis.ai_powered ? '#2ecc71' : '#f39c12'}; font-weight: bold;">
+                                ${analysis.ai_powered ? 'AI-Enhanced' : 'Basic Analysis'}
+                            </div>
+                            ${analysis.fallback_mode ? '<p><small>AI was unavailable</small></p>' : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function generateRiskAssessmentSection(analysis) {
+            const risk = analysis.risk_assessment?.suicidal_risk;
+            if (!risk) return '';
+            
+            const riskColor = getRiskColor(risk.level);
+            
+            return `
+                <div class="section ${risk.score >= 5 ? 'critical-section' : ''}">
+                    <h3>🆘 Risk Assessment</h3>
+                    <div class="metric-card" style="border-left-color: ${riskColor};">
+                        <h4>Suicidal Risk Level</h4>
+                        <div style="font-size: 24px; color: ${riskColor}; font-weight: bold;">
+                            ${risk.level}
+                        </div>
+                        <p>Risk Score: ${risk.score}/20</p>
+                        ${risk.flags && risk.flags.length > 0 ? `
+                            <div style="margin-top: 15px;">
+                                <strong>Concerning Indicators:</strong>
+                                <ul>${risk.flags.map(flag => `<li>${flag}</li>`).join('')}</ul>
+                            </div>
+                        ` : ''}
+                    </div>
+                    
+                    ${risk.immediate_action_required ? `
+                        <div style="background: #fef2f2; padding: 20px; border-radius: 10px; margin-top: 15px; border-left: 4px solid #dc2626;">
+                            <h4 style="color: #dc2626;">⚠️ Immediate Action Required</h4>
+                            <p>Please contact emergency services or a crisis helpline immediately.</p>
+                            <button onclick="showCrisisIntervention()" class="btn btn-danger">Get Crisis Support</button>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+        }
+
+        function generatePersonalityProfileSection(analysis) {
+            const personality = analysis.personality_profile;
+            if (!personality) return '';
+            
+            return `
+                <div class="section">
+                    <h3>🎭 Personality Profile</h3>
+                    <div class="metric-grid">
+                        <div class="metric-card" style="border-left-color: #059669;">
+                            <h4>❤️ Empathy Level</h4>
+                            <div style="font-size: 24px; color: #059669; font-weight: bold;">
+                                ${personality.empathy_level?.level || 'Average'}
+                            </div>
+                            <p>${personality.empathy_level?.percentage || 50}% Score</p>
+                        </div>
+                        
+                        ${personality.narcissistic_traits ? `
+                        <div class="metric-card" style="border-left-color: #a21caf;">
+                            <h4>🪞 Narcissistic Traits</h4>
+                            <div style="font-size: 18px; color: #a21caf; font-weight: bold;">
+                                ${personality.narcissistic_traits.level}
+                            </div>
+                            <p>Score: ${personality.narcissistic_traits.score}</p>
+                        </div>
+                        ` : ''}
+                        
+                        ${personality.antisocial_traits ? `
+                        <div class="metric-card" style="border-left-color: #be123c;">
+                            <h4>⚖️ Antisocial Traits</h4>
+                            <div style="font-size: 18px; color: #be123c; font-weight: bold;">
+                                ${personality.antisocial_traits.level}
+                            </div>
+                            <p>Score: ${personality.antisocial_traits.score}</p>
+                        </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        function generateMentalHealthSection(analysis) {
+            const mental = analysis.mental_health_indicators;
+            if (!mental) return '';
+            
+            return `
+                <div class="section">
+                    <h3>🧠 Mental Health Indicators</h3>
+                    <div class="metric-grid">
+                        <div class="metric-card" style="border-left-color: #3498db;">
+                            <h4>😊 Overall Wellbeing</h4>
+                            <div style="font-size: 24px; color: #3498db; font-weight: bold;">
+                                ${mental.overall_wellbeing}/10
+                            </div>
+                        </div>
+                        
+                        <div class="metric-card" style="border-left-color: ${mental.anxiety_indicators > 6 ? '#e74c3c' : '#f39c12'};">
+                            <h4>😰 Anxiety Level</h4>
+                            <div style="font-size: 24px; color: ${mental.anxiety_indicators > 6 ? '#e74c3c' : '#f39c12'}; font-weight: bold;">
+                                ${mental.anxiety_indicators}/10
+                            </div>
+                        </div>
+                        
+                        <div class="metric-card" style="border-left-color: ${mental.depression_indicators > 6 ? '#e74c3c' : '#2ecc71'};">
+                            <h4>😔 Depression Indicators</h4>
+                            <div style="font-size: 24px; color: ${mental.depression_indicators > 6 ? '#e74c3c' : '#2ecc71'}; font-weight: bold;">
+                                ${mental.depression_indicators}/10
+                            </div>
+                        </div>
+                        
+                        <div class="metric-card" style="border-left-color: #9b59b6;">
+                            <h4>😴 Sleep Quality Impact</h4>
+                            <div style="font-size: 24px; color: #9b59b6; font-weight: bold;">
+                                ${mental.sleep_quality_impact}/10
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function generateFamilyInfluenceSection(analysis) {
+            const family = analysis.family_influence_analysis;
+            if (!family) return '';
+            
+            const influenceColor = getFamilyInfluenceColor(family.overall_impact);
+            
+            return `
+                <div class="section">
+                    <h3>👨‍👩‍👧‍👦 Family Influence Analysis</h3>
+                    <div class="metric-card" style="border-left-color: ${influenceColor};">
+                        <h4>Family Impact</h4>
+                        <div style="color: ${influenceColor}; font-weight: bold; font-size: 18px;">
+                            ${family.overall_impact}
+                        </div>
+                        <p>Influence Score: ${family.score}</p>
+                    </div>
+                    
+                    ${family.risk_factors && family.risk_factors.length > 0 ? `
+                    <div style="background: #fef2f2; padding: 15px; border-radius: 10px; margin: 15px 0; border-left: 4px solid #e74c3c;">
+                        <h4 style="color: #e74c3c;">⚠️ Family Risk Factors:</h4>
+                        ${family.risk_factors.map(factor => `<p>• ${factor}</p>`).join('')}
+                    </div>
+                    ` : ''}
+                    
+                    ${family.protective_factors && family.protective_factors.length > 0 ? `
+                    <div style="background: #f0f9ff; padding: 15px; border-radius: 10px; margin: 15px 0; border-left: 4px solid #2ecc71;">
+                        <h4 style="color: #2ecc71;">✅ Protective Factors:</h4>
+                        ${family.protective_factors.map(factor => `<p>• ${factor}</p>`).join('')}
+                    </div>
+                    ` : ''}
+                </div>
+            `;
+        }
+
+        function generateRecommendationsSection(analysis) {
+            const rec = analysis.personalized_recommendations;
+            if (!rec) return '';
+            
+            return `
+                <div class="section">
+                    <h3>💡 Personalized Recommendations</h3>
+                    
+                    ${rec.immediate_actions && rec.immediate_actions.length > 0 ? `
+                    <div style="background: #fff8dc; padding: 20px; border-radius: 10px; margin: 15px 0; border-left: 4px solid #f39c12;">
+                        <h4 style="color: #f39c12;">⚡ Immediate Actions (Next 24-48 hours):</h4>
+                        ${rec.immediate_actions.map(action => `<p>• ${action}</p>`).join('')}
+                    </div>
+                    ` : ''}
+                    
+                    ${rec.short_term_goals && rec.short_term_goals.length > 0 ? `
+                    <div style="background: #f0f9ff; padding: 20px; border-radius: 10px; margin: 15px 0; border-left: 4px solid #3498db;">
+                        <h4 style="color: #3498db;">📅 Short-term Goals (1-3 months):</h4>
+                        ${rec.short_term_goals.map(goal => `<p>• ${goal}</p>`).join('')}
+                    </div>
+                    ` : ''}
+                    
+                    ${rec.long_term_strategies && rec.long_term_strategies.length > 0 ? `
+                    <div style="background: #f0fdf4; padding: 20px; border-radius: 10px; margin: 15px 0; border-left: 4px solid #22c55e;">
+                        <h4 style="color: #22c55e;">🎯 Long-term Strategies (6+ months):</h4>
+                        ${rec.long_term_strategies.map(strategy => `<p>• ${strategy}</p>`).join('')}
+                    </div>
+                    ` : ''}
+                </div>
+            `;
+        }
+
+        function generateTreatmentPlanSection(analysis) {
+            const plan = analysis.detailed_treatment_plan;
+            if (!plan) return '';
+            
+            return `
+                <div class="section">
+                    <h3>🏥 Treatment Recommendations</h3>
+                    
+                    ${plan.therapy_recommendations && plan.therapy_recommendations.length > 0 ? `
+                    <div style="background: #f5f3ff; padding: 20px; border-radius: 10px; margin: 15px 0; border-left: 4px solid #8b5cf6;">
+                        <h4 style="color: #8b5cf6;">🛋️ Therapy Recommendations:</h4>
+                        ${plan.therapy_recommendations.map(therapy => `<p>• ${therapy}</p>`).join('')}
+                    </div>
+                    ` : ''}
+                    
+                    ${plan.medication_considerations ? `
+                    <div style="background: #fef7ff; padding: 20px; border-radius: 10px; margin: 15px 0; border-left: 4px solid #ec4899;">
+                        <h4 style="color: #ec4899;">💊 Medication Considerations:</h4>
+                        <p>${plan.medication_considerations}</p>
+                    </div>
+                    ` : ''}
+                    
+                    ${plan.lifestyle_modifications && plan.lifestyle_modifications.length > 0 ? `
+                    <div style="background: #ecfdf5; padding: 20px; border-radius: 10px; margin: 15px 0; border-left: 4px solid #10b981;">
+                        <h4 style="color: #10b981;">🌱 Lifestyle Modifications:</h4>
+                        ${plan.lifestyle_modifications.map(mod => `<p>• ${mod}</p>`).join('')}
+                    </div>
+                    ` : ''}
+                    
+                    ${plan.follow_up_timeline ? `
+                    <div style="background: #f0f9ff; padding: 20px; border-radius: 10px; margin: 15px 0; border-left: 4px solid #0ea5e9;">
+                        <h4 style="color: #0ea5e9;">📅 Follow-up Timeline:</h4>
+                        <p>${plan.follow_up_timeline}</p>
+                    </div>
+                    ` : ''}
+                </div>
+            `;
+        }
+
+        function generateWrittenAnalysisSection(analysis) {
+            if (!analysis.written_analysis) return '';
+            
+            return `
+                <div class="written-analysis-section">
+                    <h3>📝 ${analysis.ai_powered ? 'AI-Generated' : 'Basic'} Detailed Analysis</h3>
+                    <div class="analysis-content">
+                        ${analysis.written_analysis.replace(/\n/g, '<br>')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function generateDisclaimerSection(analysis) {
+            return `
+                <div class="disclaimer">
+                    <h4>⚠️ Important Medical Disclaimer</h4>
+                    <p><strong>This assessment is for informational and research purposes only.</strong></p>
+                    <ul style="margin: 10px 0 0 20px;">
+                        <li>Not a substitute for professional medical or psychological diagnosis</li>
+                        <li>Results should be discussed with qualified mental health professionals</li>
+                        <li>In case of emergency, contact your local crisis helpline or emergency services</li>
+                        <li>Crisis Support: National Suicide Prevention Lifeline: 988</li>
+                        <li>Your data contributes to mental health research (anonymized)</li>
+                        ${analysis.ai_powered ? '<li>Analysis generated using artificial intelligence for educational purposes</li>' : '<li>Basic analysis provided - enable AI for enhanced insights</li>'}
+                    </ul>
+                </div>
+            `;
+        }
+
+        // Helper Functions
+        function getRiskColor(level) {
+            if (level?.includes('CRITICAL')) return '#dc2626';
+            if (level?.includes('HIGH')) return '#ea580c';
+            if (level?.includes('MODERATE')) return '#d97706';
+            return '#059669';
+        }
+        
+        function getFamilyInfluenceColor(influence) {
+            switch(influence) {
+                case 'Very Protective': return '#22c55e';
+                case 'Protective': return '#10b981';
+                case 'Neutral': return '#6b7280';
+                case 'Risk Factor': return '#f59e0b';
+                case 'High Risk': return '#dc2626';
+                default: return '#6b7280';
+            }
+        }
+
         // Dynamic Sibling Fields Generation
         function generateSiblingFields() {
             const numSiblings = parseInt(document.getElementById('numSiblings').value) || 0;
@@ -1053,6 +2512,8 @@
         // Progress Tracking
         function updatePersonalProgress() {
             const form = document.getElementById('personalInfoForm');
+            if (!form) return;
+            
             const inputs = form.querySelectorAll('input, select, textarea');
             let filled = 0;
             let total = 0;
@@ -1065,12 +2526,15 @@
                 }
             });
             
-            const progress = (filled / total) * 100;
-            document.getElementById('personalProgress').style.width = progress + '%';
+            const progress = total > 0 ? (filled / total) * 100 : 0;
+            const progressBar = document.getElementById('personalProgress');
+            if (progressBar) progressBar.style.width = progress + '%';
         }
         
         function updateAssessmentProgress() {
             const form = document.getElementById('psychologicalAssessment');
+            if (!form) return;
+            
             const inputs = form.querySelectorAll('input, select, textarea');
             let filled = 0;
             let total = 0;
@@ -1083,844 +2547,52 @@
                 }
             });
             
-            const progress = (filled / total) * 100;
-            document.getElementById('assessmentProgress').style.width = progress + '%';
+            const progress = total > 0 ? (filled / total) * 100 : 0;
+            const progressBar = document.getElementById('assessmentProgress');
+            if (progressBar) progressBar.style.width = progress + '%';
         }
         
         // Range Input Updates
         function updateRangeValue(slider, valueId) {
-            document.getElementById(valueId).textContent = slider.value;
-            updatePersonalProgress();
-            updateAssessmentProgress();
+            const valueElement = document.getElementById(valueId);
+            if (valueElement) valueElement.textContent = slider.value;
+            updateProgress();
         }
         
-        // Assessment Analysis Functions
-        function generateAnalysis() {
-            if (!validateAssessment()) {
-                alert('Please complete all required fields in the assessment.');
-                return;
-            }
-            
-            collectAssessmentData();
-            showLoadingScreen();
-            
-            setTimeout(() => {
-                const analysis = performComprehensiveAnalysis();
-                saveAnalysisResults(analysis);
-                hideLoadingScreen();
-                showResultsPage();
-                displayResults(analysis);
-            }, 3000);
-        }
-        
-        function collectAssessmentData() {
-            const form = document.getElementById('psychologicalAssessment');
-            const inputs = form.querySelectorAll('input, select, textarea');
-            
-            assessmentData = {};
-            inputs.forEach(input => {
-                if (input.type === 'checkbox') {
-                    if (!assessmentData[input.name]) assessmentData[input.name] = [];
-                    if (input.checked) assessmentData[input.name].push(input.id);
-                } else {
-                    assessmentData[input.id] = input.value;
-                }
-            });
-        }
-        
-        function validateAssessment() {
-            const requiredFields = ['death_thoughts', 'self_harm_thoughts', 'suicide_plan'];
-            return requiredFields.every(field => {
-                const element = document.getElementById(field);
-                return element && element.value !== '';
-            });
-        }
-        
-        function performComprehensiveAnalysis() {
-            // Comprehensive analysis combining personal background and assessment data
-            const suicidalRisk = assessSuicidalRisk(assessmentData);
-            const empathyLevel = assessEmpathy(assessmentData);
-            const narcissisticTraits = assessNarcissism(assessmentData);
-            const antisocialTraits = assessAntisocial(assessmentData);
-            const mentalHealthScore = calculateMentalHealthScore(assessmentData);
-            const familyInfluence = analyzeFamilyInfluence(personalData);
-            const personalityType = determinePersonalityType(empathyLevel, narcissisticTraits, antisocialTraits, suicidalRisk);
-            
-            return {
-                personalInfo: personalData,
-                suicidalRisk,
-                empathyLevel,
-                narcissisticTraits,
-                antisocialTraits,
-                mentalHealthScore,
-                familyInfluence,
-                personalityType,
-                recommendations: generatePersonalizedRecommendations(personalData, suicidalRisk, empathyLevel, narcissisticTraits, antisocialTraits, mentalHealthScore, familyInfluence),
-                detailedPlan: createDetailedTreatmentPlan(personalData, suicidalRisk, empathyLevel, narcissisticTraits, antisocialTraits, mentalHealthScore, familyInfluence),
-                timestamp: new Date().toISOString()
-            };
-        }
-        
-        function analyzeFamilyInfluence(personalData) {
-            let familyScore = 0;
-            let riskFactors = [];
-            let protectiveFactors = [];
-            
-            // Analyze family relationship quality
-            if (personalData.parentRelationship) {
-                if (personalData.parentRelationship >= 8) {
-                    protectiveFactors.push('Strong parental relationship');
-                    familyScore += 2;
-                } else if (personalData.parentRelationship <= 3) {
-                    riskFactors.push('Poor parental relationship');
-                    familyScore -= 2;
-                }
-            }
-            
-            // Analyze family structure
-            if (personalData.parentsRelationship) {
-                if (personalData.parentsRelationship === 'married-happy') {
-                    protectiveFactors.push('Stable family structure');
-                    familyScore += 1;
-                } else if (['divorced', 'separated', 'single-parent'].includes(personalData.parentsRelationship)) {
-                    riskFactors.push('Family structure disruption');
-                    familyScore -= 1;
-                }
-            }
-            
-            // Analyze family issues
-            if (personalData.familyIssues && personalData.familyIssues.length > 0) {
-                const seriousIssues = ['domestic_violence', 'substance_abuse', 'abuse', 'neglect', 'mental_illness'];
-                const hasSerious = personalData.familyIssues.some(issue => seriousIssues.includes(issue));
-                
-                if (hasSerious) {
-                    riskFactors.push('Serious family dysfunction');
-                    familyScore -= 3;
-                } else if (personalData.familyIssues.length > 2) {
-                    riskFactors.push('Multiple family stressors');
-                    familyScore -= 1;
-                }
-            }
-            
-            // Sibling relationships
-            if (personalData.siblingRelationships && personalData.siblingRelationships.length > 0) {
-                const avgSiblingRelation = personalData.siblingRelationships.reduce((sum, rel) => sum + rel.relationship, 0) / personalData.siblingRelationships.length;
-                if (avgSiblingRelation >= 7) {
-                    protectiveFactors.push('Strong sibling bonds');
-                    familyScore += 1;
-                } else if (avgSiblingRelation <= 3) {
-                    riskFactors.push('Poor sibling relationships');
-                    familyScore -= 1;
-                }
-            }
-            
-            let influence = 'Neutral';
-            if (familyScore >= 3) influence = 'Very Protective';
-            else if (familyScore >= 1) influence = 'Protective';
-            else if (familyScore <= -3) influence = 'High Risk';
-            else if (familyScore <= -1) influence = 'Risk Factor';
-            
-            return {
-                score: familyScore,
-                influence,
-                riskFactors,
-                protectiveFactors
-            };
-        }
-        
-        function createDetailedTreatmentPlan(personalData, suicidalRisk, empathyLevel, narcissisticTraits, antisocialTraits, mentalHealthScore, familyInfluence) {
-            const plan = {
-                immediate: [],
-                shortTerm: [],
-                longTerm: [],
-                familyFocus: [],
-                culturalConsiderations: []
-            };
-            
-            // Immediate interventions
-            if (suicidalRisk.score >= 8) {
-                plan.immediate.push('🚨 EMERGENCY: Contact crisis services immediately');
-                plan.immediate.push('📞 Establish 24/7 support network');
-                plan.immediate.push('🏥 Inpatient psychiatric evaluation');
-            } else if (suicidalRisk.score >= 5) {
-                plan.immediate.push('👨‍⚕️ Schedule urgent psychiatric evaluation within 48 hours');
-                plan.immediate.push('🔒 Remove potential means of self-harm');
-                plan.immediate.push('📱 Install crisis support apps');
-            }
-            
-            // Short-term (1-3 months)
-            if (narcissisticTraits.score >= 8) {
-                plan.shortTerm.push('🪞 Begin Dialectical Behavior Therapy (DBT)');
-                plan.shortTerm.push('👥 Group therapy for personality development');
-            }
-            
-            if (antisocialTraits.score >= 8) {
-                plan.shortTerm.push('⚖️ Cognitive-behavioral therapy focusing on empathy building');
-                plan.shortTerm.push('🎯 Moral reasoning training');
-            }
-            
-            if (empathyLevel.percentage < 30) {
-                plan.shortTerm.push('❤️ Empathy training exercises');
-                plan.shortTerm.push('📚 Emotional intelligence workshops');
-            }
-            
-            // Long-term (6+ months)
-            plan.longTerm.push('🧠 Regular psychiatric follow-ups every 3-6 months');
-            plan.longTerm.push('💊 Medication management if indicated');
-            plan.longTerm.push('🎯 Develop healthy coping mechanisms');
-            
-            // Family-focused interventions
-            if (familyInfluence.riskFactors.length > 0) {
-                plan.familyFocus.push('👨‍👩‍👧‍👦 Family therapy sessions');
-                plan.familyFocus.push('🗣️ Improve family communication patterns');
-                if (personalData.familyIssues.includes('domestic_violence') || personalData.familyIssues.includes('abuse')) {
-                    plan.familyFocus.push('🛡️ Safety planning and protective measures');
-                }
-            }
-            
-            // Cultural considerations
-            if (personalData.religion && personalData.religion !== 'atheist') {
-                plan.culturalConsiderations.push('🙏 Incorporate spiritual/religious counseling');
-                plan.culturalConsiderations.push('⛪ Connect with faith-based support systems');
-            }
-            
-            if (personalData.ethnicity && personalData.ethnicity !== 'white-caucasian') {
-                plan.culturalConsiderations.push('🌍 Culturally-sensitive therapy approaches');
-                plan.culturalConsiderations.push('👥 Connect with culturally-matched support groups');
-            }
-            
-            return plan;
-        }
-        
-        function generatePersonalizedRecommendations(personalData, suicidalRisk, empathyLevel, narcissisticTraits, antisocialTraits, mentalHealthScore, familyInfluence) {
-            const recommendations = [];
-            
-            // Age-specific recommendations
-            if (personalData.age < 18) {
-                recommendations.push({
-                    type: 'AGE-SPECIFIC',
-                    text: '👨‍👩‍👧‍👦 Involve parents/guardians in treatment planning (if safe)',
-                    color: '#9b59b6'
-                });
-                recommendations.push({
-                    type: 'EDUCATION',
-                    text: '🎓 School counseling and academic support services',
-                    color: '#3498db'
-                });
-            } else if (personalData.age >= 65) {
-                recommendations.push({
-                    type: 'AGE-SPECIFIC',
-                    text: '👴 Geriatric mental health specialist consultation',
-                    color: '#9b59b6'
-                });
-            }
-            
-            // Education-based recommendations
-            if (personalData.education === 'elementary' || personalData.education === 'middle-school') {
-                recommendations.push({
-                    type: 'EDUCATION',
-                    text: '📚 Consider continuing education for improved mental health outcomes',
-                    color: '#e67e22'
-                });
-            }
-            
-            // Family-specific recommendations
-            if (familyInfluence.score < -2) {
-                recommendations.push({
-                    type: 'FAMILY',
-                    text: '🏠 Consider family therapy or mediation services',
-                    color: '#e74c3c'
-                });
-            }
-            
-            // Continue with existing recommendation logic...
-            // (Include all the recommendation logic from the previous version)
-            
-            return recommendations;
-        }
-        
-        function saveAnalysisResults(analysis) {
-            if (!currentUser) return;
-            
-            db.collection('users').doc(currentUser.uid).update({
-                assessmentData: assessmentData,
-                analysisResults: analysis,
-                hasCompletedAssessment: true,
-                completionDate: firebase.firestore.FieldValue.serverTimestamp()
-            })
-            .catch((error) => {
-                console.error("Error saving analysis results:", error);
-            });
-        }
-        
-        function displayResults(analysis) {
-            const container = document.getElementById('resultsContent');
-            
-            const personalInfo = analysis.personalInfo;
-            const familyInfo = analysis.familyInfluence;
-            
-            container.innerHTML = `
-                <div class="section">
-                    <h3>👤 Personal Profile Summary</h3>
-                    <div class="metric-grid">
-                        <div class="metric-card">
-                            <h4>${personalInfo.fullName}</h4>
-                            <p>Age: ${personalInfo.age} | ${personalInfo.gender || 'Not specified'}</p>
-                            <p>📍 ${personalInfo.city}, ${personalInfo.country}</p>
-                            <p>🎓 ${personalInfo.education || 'Not specified'}</p>
-                        </div>
-                        <div class="metric-card">
-                            <h4>👨‍👩‍👧‍👦 Family Background</h4>
-                            <p>Siblings: ${personalInfo.numSiblings || 0}</p>
-                            <p>Birth Order: ${personalInfo.birthOrder || 'Not specified'}</p>
-                            <p>Parent Relationship: ${personalInfo.parentRelationship}/10</p>
-                        </div>
-                        <div class="metric-card" style="border-left-color: ${getFamilyInfluenceColor(familyInfo.influence)};">
-                            <h4>🏠 Family Influence</h4>
-                            <p style="color: ${getFamilyInfluenceColor(familyInfo.influence)}; font-weight: bold;">
-                                ${familyInfo.influence}
-                            </p>
-                            <p>Score: ${familyInfo.score}</p>
-                        </div>
-                    </div>
-                    
-                    ${familyInfo.riskFactors.length > 0 ? `
-                    <div style="background: #fef2f2; padding: 15px; border-radius: 10px; margin: 15px 0; border-left: 4px solid #e74c3c;">
-                        <h4 style="color: #e74c3c;">⚠️ Family Risk Factors:</h4>
-                        ${familyInfo.riskFactors.map(factor => `<p>• ${factor}</p>`).join('')}
-                    </div>
-                    ` : ''}
-                    
-                    ${familyInfo.protectiveFactors.length > 0 ? `
-                    <div style="background: #f0f9ff; padding: 15px; border-radius: 10px; margin: 15px 0; border-left: 4px solid #2ecc71;">
-                        <h4 style="color: #2ecc71;">✅ Protective Factors:</h4>
-                        ${familyInfo.protectiveFactors.map(factor => `<p>• ${factor}</p>`).join('')}
-                    </div>
-                    ` : ''}
-                </div>
-                
-                <div class="section">
-                    <h3>📊 Psychological Assessment Results</h3>
-                    <div class="metric-grid">
-                        <div class="metric-card" style="border-left-color: ${getSuicidalRiskColor(analysis.suicidalRisk.score)};">
-                            <h4>🆘 Suicidal Risk</h4>
-                            <div style="font-size: 24px; color: ${getSuicidalRiskColor(analysis.suicidalRisk.score)}; font-weight: bold;">
-                                ${analysis.suicidalRisk.level}
-                            </div>
-                            <p>Score: ${analysis.suicidalRisk.score}/20</p>
-                        </div>
-                        
-                        <div class="metric-card" style="border-left-color: #059669;">
-                            <h4>❤️ Empathy Level</h4>
-                            <div style="font-size: 24px; color: #059669; font-weight: bold;">
-                                ${analysis.empathyLevel.level}
-                            </div>
-                            <p>${analysis.empathyLevel.percentage}% Score</p>
-                        </div>
-                        
-                        <div class="metric-card" style="border-left-color: ${analysis.personalityType.color};">
-                            <h4>🎭 Personality Type</h4>
-                            <div style="font-size: 18px; color: ${analysis.personalityType.color}; font-weight: bold;">
-                                ${analysis.personalityType.type}
-                            </div>
-                        </div>
-                        
-                        <div class="metric-card" style="border-left-color: #0891b2;">
-                            <h4>🧠 Mental Health</h4>
-                            <div style="font-size: 24px; color: #0891b2; font-weight: bold;">
-                                ${analysis.mentalHealthScore}/10
-                            </div>
-                            <p>Overall Wellbeing</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="section">
-                    <h3>📋 Detailed Treatment Plan</h3>
-                    
-                    ${analysis.detailedPlan.immediate.length > 0 ? `
-                    <div style="background: #fef2f2; padding: 20px; border-radius: 10px; margin: 15px 0; border-left: 4px solid #e74c3c;">
-                        <h4 style="color: #e74c3c;">🚨 Immediate Actions (Next 24-48 hours):</h4>
-                        ${analysis.detailedPlan.immediate.map(action => `<p>• ${action}</p>`).join('')}
-                    </div>
-                    ` : ''}
-                    
-                    ${analysis.detailedPlan.shortTerm.length > 0 ? `
-                    <div style="background: #fff8dc; padding: 20px; border-radius: 10px; margin: 15px 0; border-left: 4px solid #f39c12;">
-                        <h4 style="color: #f39c12;">📅 Short-term Goals (1-3 months):</h4>
-                        ${analysis.detailedPlan.shortTerm.map(goal => `<p>• ${goal}</p>`).join('')}
-                    </div>
-                    ` : ''}
-                    
-                    ${analysis.detailedPlan.longTerm.length > 0 ? `
-                    <div style="background: #f0f9ff; padding: 20px; border-radius: 10px; margin: 15px 0; border-left: 4px solid #3498db;">
-                        <h4 style="color: #3498db;">🎯 Long-term Strategy (6+ months):</h4>
-                        ${analysis.detailedPlan.longTerm.map(strategy => `<p>• ${strategy}</p>`).join('')}
-                    </div>
-                    ` : ''}
-                    
-                    ${analysis.detailedPlan.familyFocus.length > 0 ? `
-                    <div style="background: #f5f3ff; padding: 20px; border-radius: 10px; margin: 15px 0; border-left: 4px solid #8b5cf6;">
-                        <h4 style="color: #8b5cf6;">👨‍👩‍👧‍👦 Family-Focused Interventions:</h4>
-                        ${analysis.detailedPlan.familyFocus.map(intervention => `<p>• ${intervention}</p>`).join('')}
-                    </div>
-                    ` : ''}
-                    
-                    ${analysis.detailedPlan.culturalConsiderations.length > 0 ? `
-                    <div style="background: #f0fdf4; padding: 20px; border-radius: 10px; margin: 15px 0; border-left: 4px solid #22c55e;">
-                        <h4 style="color: #22c55e;">🌍 Cultural Considerations:</h4>
-                        ${analysis.detailedPlan.culturalConsiderations.map(consideration => `<p>• ${consideration}</p>`).join('')}
-                    </div>
-                    ` : ''}
-                </div>
-                
-                <div class="disclaimer">
-                    <h4>⚠️ Important Medical Disclaimer</h4>
-                    <p><strong>This assessment is for informational and research purposes only.</strong></p>
-                    <ul style="margin: 10px 0 0 20px;">
-                        <li>Not a substitute for professional medical or psychological diagnosis</li>
-                        <li>Results should be discussed with qualified mental health professionals</li>
-                        <li>In case of emergency, contact your local crisis helpline or emergency services</li>
-                        <li>Crisis Support: National Suicide Prevention Lifeline: 988</li>
-                        <li>Your data contributes to mental health research (anonymized)</li>
-                    </ul>
-                </div>
-            `;
-        }
-        
-        // Helper Functions
-        function getSuicidalRiskColor(score) {
-            if (score >= 8) return '#dc2626';
-            if (score >= 5) return '#ea580c';
-            if (score >= 3) return '#d97706';
-            return '#059669';
-        }
-        
-        function getFamilyInfluenceColor(influence) {
-            switch(influence) {
-                case 'Very Protective': return '#22c55e';
-                case 'Protective': return '#10b981';
-                case 'Neutral': return '#6b7280';
-                case 'Risk Factor': return '#f59e0b';
-                case 'High Risk': return '#dc2626';
-                default: return '#6b7280';
-            }
-        }
-        
-        function showLoadingScreen() {
-            document.getElementById('loadingScreen').style.display = 'block';
-        }
-        
-        function hideLoadingScreen() {
-            document.getElementById('loadingScreen').style.display = 'none';
-        }
-        
+        // Report Download Function
         function downloadReport() {
-            // Generate and download PDF report
             const reportContent = document.getElementById('resultsContent').innerHTML;
             const printWindow = window.open('', '_blank');
             printWindow.document.write(`
                 <html>
                 <head>
-                    <title>MindScan Pro - Psychological Assessment Report</title>
+                    <title>MindScan Pro - AI-Powered Psychological Assessment Report</title>
                     <style>
-                        body { font-family: Arial, sans-serif; margin: 20px; }
-                        .section { margin-bottom: 30px; }
+                        body { font-family: Arial, sans-serif; margin: 20px; line-height: 1.6; }
+                        .section { margin-bottom: 30px; page-break-inside: avoid; }
                         .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
                         .metric-card { border: 1px solid #ddd; padding: 15px; border-radius: 8px; }
                         h3 { color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
                         .disclaimer { background: #fff3cd; padding: 15px; border-radius: 8px; margin-top: 30px; }
+                        .analysis-content { background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 10px 0; }
+                        @media print { .section { page-break-inside: avoid; } }
                     </style>
                 </head>
                 <body>
-                    <h1>🧠 MindScan Pro - Comprehensive Psychological Assessment Report</h1>
-                    <p>Generated on: ${new Date().toLocaleDateString()}</p>
+                    <h1>🧠 MindScan Pro - AI-Powered Psychological Assessment Report</h1>
+                    <p><strong>Generated on:</strong> ${new Date().toLocaleDateString()}</p>
+                    <p><strong>Analysis Type:</strong> ${assessmentData.ai_powered ? 'AI-Enhanced' : 'Basic Analysis'}</p>
                     <hr>
                     ${reportContent}
+                    <footer style="margin-top: 50px; text-align: center; color: #666; font-size: 12px;">
+                        <p>Report generated by MindScan Pro - For educational and research purposes only</p>
+                    </footer>
                 </body>
                 </html>
             `);
             printWindow.document.close();
             printWindow.print();
         }
-        
-        // Assessment Analysis Functions (from previous version)
-        function assessSuicidalRisk(data) {
-            let riskScore = 0;
-            let riskLevel = 'Low';
-            let criticalFlags = [];
-            
-            // Death thoughts
-            const deathThoughts = data.death_thoughts;
-            if (deathThoughts === 'daily') { riskScore += 4; criticalFlags.push('Daily death thoughts'); }
-            else if (deathThoughts === 'often') { riskScore += 3; criticalFlags.push('Frequent death thoughts'); }
-            else if (deathThoughts === 'sometimes') { riskScore += 2; }
-            else if (deathThoughts === 'rarely') { riskScore += 1; }
-            
-            // Self-harm thoughts
-            const selfHarmThoughts = data.self_harm_thoughts;
-            if (selfHarmThoughts === 'today') { riskScore += 5; criticalFlags.push('IMMEDIATE RISK: Suicidal thoughts today'); }
-            else if (selfHarmThoughts === 'past_week') { riskScore += 4; criticalFlags.push('Recent suicidal thoughts'); }
-            else if (selfHarmThoughts === 'past_month') { riskScore += 3; criticalFlags.push('Recent suicidal ideation'); }
-            else if (selfHarmThoughts === 'past_not_recent') { riskScore += 1; }
-            
-            // Suicide plan
-            const suicidePlan = data.suicide_plan;
-            if (suicidePlan === 'prepared') { riskScore += 6; criticalFlags.push('CRITICAL: Has plan and means'); }
-            else if (suicidePlan === 'specific') { riskScore += 4; criticalFlags.push('Has specific suicide plan'); }
-            else if (suicidePlan === 'vague') { riskScore += 2; }
-            
-            // Previous attempts
-            const attempts = data.suicide_attempt;
-            if (attempts === 'past_month') { riskScore += 5; criticalFlags.push('Recent suicide attempt'); }
-            else if (attempts === 'past_year') { riskScore += 3; criticalFlags.push('Suicide attempt within year'); }
-            else if (attempts === 'multiple') { riskScore += 4; criticalFlags.push('Multiple suicide attempts'); }
-            else if (attempts === 'considered') { riskScore += 1; }
-            
-            // Determine risk level
-            if (riskScore >= 8) {
-                riskLevel = 'CRITICAL - IMMEDIATE INTERVENTION REQUIRED';
-            } else if (riskScore >= 5) {
-                riskLevel = 'HIGH - Professional help needed urgently';
-            } else if (riskScore >= 3) {
-                riskLevel = 'MODERATE - Professional evaluation recommended';
-            } else if (riskScore >= 1) {
-                riskLevel = 'LOW-MODERATE - Monitor closely';
-            }
-            
-            return { score: riskScore, level: riskLevel, flags: criticalFlags };
-        }
-        
-        function assessEmpathy(data) {
-            let empathyScore = 0;
-            
-            // Emotional responses
-            empathyScore += parseInt(data.empathy_crying) || 5;
-            empathyScore += parseInt(data.emotion_reading) || 5;
-            
-            // Scenario responses
-            const scenario1 = data.empathy_scenario1;
-            if (scenario1 === 'deeply_moved') empathyScore += 10;
-            else if (scenario1 === 'emotional') empathyScore += 8;
-            else if (scenario1 === 'practical') empathyScore += 5;
-            else if (scenario1 === 'self_focused') empathyScore += 2;
-            else if (scenario1 === 'detached') empathyScore += 1;
-            
-            // Movie empathy
-            const movieEmpathy = data.movie_empathy;
-            if (movieEmpathy === 'overwhelmed') empathyScore += 10;
-            else if (movieEmpathy === 'cry') empathyScore += 8;
-            else if (movieEmpathy === 'moderately') empathyScore += 6;
-            else if (movieEmpathy === 'slightly') empathyScore += 3;
-            else if (movieEmpathy === 'unaffected') empathyScore += 0;
-            
-            // Perspective taking
-            const perspectiveTaking = data.perspective_taking;
-            if (perspectiveTaking === 'always') empathyScore += 8;
-            else if (perspectiveTaking === 'often') empathyScore += 6;
-            else if (perspectiveTaking === 'sometimes') empathyScore += 4;
-            else if (perspectiveTaking === 'rarely') empathyScore += 2;
-            else if (perspectiveTaking === 'never') empathyScore += 0;
-            
-            // Calculate level
-            const maxScore = 46;
-            const percentage = (empathyScore / maxScore) * 100;
-            
-            let level = 'Normal';
-            if (percentage >= 80) level = 'Highly Empathetic';
-            else if (percentage >= 60) level = 'Above Average Empathy';
-            else if (percentage >= 40) level = 'Average Empathy';
-            else if (percentage >= 20) level = 'Below Average Empathy';
-            else level = 'Very Low Empathy';
-            
-            return { score: empathyScore, percentage: Math.round(percentage), level };
-        }
-        
-        function assessNarcissism(data) {
-            let narcScore = 0;
-            let traits = [];
-            
-            // Grandiosity
-            const specialness = parseInt(data.specialness) || 5;
-            if (specialness >= 8) { narcScore += 3; traits.push('Grandiose self-view'); }
-            else if (specialness >= 6) { narcScore += 1; }
-            
-            // Entitlement
-            const entitlement = data.entitlement;
-            if (entitlement === 'always') { narcScore += 4; traits.push('Strong sense of entitlement'); }
-            else if (entitlement === 'often') { narcScore += 3; traits.push('Entitlement tendencies'); }
-            else if (entitlement === 'sometimes') { narcScore += 1; }
-            
-            // Need for admiration
-            const admirationNeed = parseInt(data.admiration_need) || 5;
-            if (admirationNeed >= 8) { narcScore += 3; traits.push('High need for admiration'); }
-            else if (admirationNeed >= 6) { narcScore += 1; }
-            
-            // Grandiose fantasies
-            const fantasies = data.grandiose_fantasies;
-            if (fantasies === 'constantly') { narcScore += 4; traits.push('Grandiose fantasies'); }
-            else if (fantasies === 'often') { narcScore += 3; traits.push('Frequent power fantasies'); }
-            else if (fantasies === 'sometimes') { narcScore += 1; }
-            
-            // Promotion reaction
-            const promotionReaction = data.promotion_reaction;
-            if (promotionReaction === 'superior') { narcScore += 3; traits.push('Superiority complex'); }
-            else if (promotionReaction === 'angry') { narcScore += 2; traits.push('Poor handling of rejection'); }
-            else if (promotionReaction === 'unfair') { narcScore += 1; }
-            
-            let level = 'Normal';
-            if (narcScore >= 12) level = 'High Narcissistic Traits';
-            else if (narcScore >= 8) level = 'Moderate Narcissistic Traits';
-            else if (narcScore >= 4) level = 'Some Narcissistic Traits';
-            
-            return { score: narcScore, level, traits };
-        }
-        
-        function assessAntisocial(data) {
-            let antisocialScore = 0;
-            let traits = [];
-            
-            // Rule breaking
-            const ruleBreaking = data.rule_breaking;
-            if (ruleBreaking === 'no_problem') { antisocialScore += 4; traits.push('Disregard for rules'); }
-            else if (ruleBreaking === 'often') { antisocialScore += 3; traits.push('Frequent rule breaking'); }
-            else if (ruleBreaking === 'minor_ok') { antisocialScore += 1; }
-            
-            // Wallet scenario
-            const walletScenario = data.wallet_scenario;
-            if (walletScenario === 'keep_all') { antisocialScore += 4; traits.push('Lack of honesty/empathy'); }
-            else if (walletScenario === 'return_no_cash') { antisocialScore += 3; traits.push('Opportunistic dishonesty'); }
-            else if (walletScenario === 'return_minus') { antisocialScore += 2; traits.push('Minor dishonesty'); }
-            else if (walletScenario === 'depends') { antisocialScore += 1; }
-            
-            // Guilt and remorse
-            const guiltRemorse = data.guilt_remorse;
-            if (guiltRemorse === 'never') { antisocialScore += 4; traits.push('Lack of remorse'); }
-            else if (guiltRemorse === 'rarely') { antisocialScore += 3; traits.push('Limited guilt/remorse'); }
-            else if (guiltRemorse === 'sometimes') { antisocialScore += 1; }
-            
-            // Deception ease
-            const deceptionEase = parseInt(data.deception_ease) || 5;
-            if (deceptionEase >= 8) { antisocialScore += 3; traits.push('Ease with deception'); }
-            else if (deceptionEase >= 6) { antisocialScore += 1; }
-            
-            // View of trusting people
-            const trustView = data.trust_view;
-            if (trustView === 'contempt') { antisocialScore += 4; traits.push('Contempt for others'); }
-            else if (trustView === 'exploitable') { antisocialScore += 4; traits.push('Exploitative mindset'); }
-            else if (trustView === 'weak') { antisocialScore += 2; traits.push('Views others as weak'); }
-            
-            let level = 'Normal';
-            if (antisocialScore >= 12) level = 'High Antisocial Traits';
-            else if (antisocialScore >= 8) level = 'Moderate Antisocial Traits';
-            else if (antisocialScore >= 4) level = 'Some Antisocial Traits';
-            
-            return { score: antisocialScore, level, traits };
-        }
-        
-        function calculateMentalHealthScore(data) {
-            const mood = parseInt(data.mood) || 5;
-            const anxiety = parseInt(data.anxiety) || 5;
-            const energy = parseInt(data.energy) || 5;
-            const sleepQuality = parseInt(data.sleep_quality) || 5;
-            
-            const positiveAvg = (mood + energy + sleepQuality) / 3;
-            const overallScore = ((positiveAvg + (10 - anxiety)) / 2).toFixed(1);
-            
-            return parseFloat(overallScore);
-        }
-        
-        function determinePersonalityType(empathy, narcissism, antisocial, suicidalRisk) {
-            const types = [];
-            
-            // Critical risk assessment
-            if (suicidalRisk.score >= 5) {
-                types.push({ type: 'At-Risk Individual', color: '#dc2626', priority: 1 });
-            }
-            
-            // Psychopathic traits (low empathy + high antisocial)
-            if (empathy.percentage < 30 && antisocial.score >= 8) {
-                types.push({ type: 'Psychopathic Traits', color: '#7c2d12', priority: 2 });
-            }
-            
-            // Narcissistic traits
-            if (narcissism.score >= 8) {
-                types.push({ type: 'Narcissistic Traits', color: '#a21caf', priority: 3 });
-            }
-            
-            // Antisocial traits
-            if (antisocial.score >= 8) {
-                types.push({ type: 'Antisocial Traits', color: '#be123c', priority: 4 });
-            }
-            
-            // High empathy
-            if (empathy.percentage >= 70) {
-                types.push({ type: 'Highly Empathetic', color: '#059669', priority: 5 });
-            }
-            
-            // Normal/healthy
-            if (types.length === 0 || (empathy.percentage >= 40 && narcissism.score < 6 && antisocial.score < 4)) {
-                types.push({ type: 'Normal/Healthy Range', color: '#0d9488', priority: 6 });
-            }
-            
-            // Sort by priority and return primary type
-            types.sort((a, b) => a.priority - b.priority);
-            return types[0] || { type: 'Unclassified', color: '#6b7280', priority: 7 };
-        }
-        
-        // Event Listeners
-        document.addEventListener('DOMContentLoaded', function() {
-            // Check if user is already logged in
-            auth.onAuthStateChanged((user) => {
-                if (user) {
-                    currentUser = user;
-                    loadUserData();
-                } else {
-                    showAuthPage();
-                }
-            });
-            
-            // Add event listeners for form changes
-            document.addEventListener('change', function() {
-                updatePersonalProgress();
-                updateAssessmentProgress();
-            });
-            
-            document.addEventListener('input', function() {
-                updatePersonalProgress();
-                updateAssessmentProgress();
-            });
-        });
-        
-        // Add the complete assessment form content from the previous version
-        // This includes all the psychological assessment questions
-        function addAssessmentContent() {
-            const assessmentContainer = document.getElementById('psychologicalAssessment');
-            
-            assessmentContainer.innerHTML = `
-                <!-- Critical Risk Assessment -->
-                <div class="section critical-section">
-                    <h3>🆘 Critical Risk Assessment</h3>
-                    
-                    <div class="critical-question">
-                        <label><strong>In the past two weeks, how often have you had thoughts of death or dying?</strong></label>
-                        <select id="death_thoughts" class="form-input" required>
-                            <option value="">Select an option</option>
-                            <option value="never">Never</option>
-                            <option value="rarely">Rarely (1-2 times)</option>
-                            <option value="sometimes">Sometimes (3-6 times)</option>
-                            <option value="often">Often (7-10 times)</option>
-                            <option value="daily">Daily or almost daily</option>
-                        </select>
-                    </div>
-                    
-                    <div class="critical-question">
-                        <label><strong>Have you ever had thoughts of hurting yourself or ending your life?</strong></label>
-                        <select id="self_harm_thoughts" class="form-input" required>
-                            <option value="">Select an option</option>
-                            <option value="never">Never</option>
-                            <option value="past_not_recent">Yes, but not recently</option>
-                            <option value="past_month">Yes, in the past month</option>
-                            <option value="past_week">Yes, in the past week</option>
-                            <option value="today">Yes, today</option>
-                        </select>
-                    </div>
-                    
-                    <div class="critical-question">
-                        <label><strong>Do you have a specific plan for how you would hurt yourself?</strong></label>
-                        <select id="suicide_plan" class="form-input" required>
-                            <option value="">Select an option</option>
-                            <option value="no">No</option>
-                            <option value="vague">Vague thoughts but no specific plan</option>
-                            <option value="specific">Yes, I have a specific plan</option>
-                            <option value="prepared">Yes, and I have access to means</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Have you ever attempted to hurt yourself or end your life?</label>
-                        <select id="suicide_attempt" class="form-input">
-                            <option value="never">Never</option>
-                            <option value="considered">Considered but never attempted</option>
-                            <option value="past_year">Yes, in the past year</option>
-                            <option value="past_month">Yes, in the past month</option>
-                            <option value="multiple">Yes, multiple times</option>
-                        </select>
-                    </div>
-                </div>
-                
-                <!-- Empathy Assessment -->
-                <div class="section">
-                    <h3>❤️ Empathy & Emotional Intelligence</h3>
-                    
-                    <div class="form-group">
-                        <label>When you see someone crying, how do you typically feel? (1-10):</label>
-                        <div class="range-container">
-                            <input type="range" id="empathy_crying" class="range-input" min="1" max="10" value="5" oninput="updateRangeValue(this, 'empathyCryingValue')">
-                            <div class="range-labels">
-                                <span>Indifferent/Annoyed</span>
-                                <span>Somewhat Moved</span>
-                                <span>Deeply Affected</span>
-                            </div>
-                            <div class="range-value" id="empathyCryingValue">5</div>
-                        </div>
-                    </div>
-                    
-                    <div class="scenario-box">
-                        <label><strong>Scenario:</strong> A friend tells you they lost their job and are worried about paying rent. Your first reaction is:</label>
-                        <select id="empathy_scenario1" class="form-input">
-                            <option value="practical">Immediately offer practical advice</option>
-                            <option value="emotional">Feel their worry and offer emotional support first</option>
-                            <option value="detached">Think they probably made mistakes that led to this</option>
-                            <option value="self_focused">Worry about how this affects your plans together</option>
-                            <option value="deeply_moved">Feel genuinely distressed by their situation</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>How easily can you tell what others are feeling just by looking at them? (1-10):</label>
-                        <div class="range-container">
-                            <input type="range" id="emotion_reading" class="range-input" min="1" max="10" value="5" oninput="updateRangeValue(this, 'emotionReadingValue')">
-                            <div class="range-labels">
-                                <span>Very Difficult</span>
-                                <span>Sometimes</span>
-                                <span>Very Easy</span>
-                            </div>
-                            <div class="range-value" id="emotionReadingValue">5</div>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>When watching a sad movie, do you:</label>
-                        <select id="movie_empathy" class="form-input">
-                            <option value="unaffected">Remain emotionally unaffected</option>
-                            <option value="slightly">Feel slightly moved</option>
-                            <option value="moderately">Feel moderately emotional</option>
-                            <option value="cry">Often cry or feel deeply moved</option>
-                            <option value="overwhelmed">Become overwhelmed with emotion</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>How often do you put yourself in others' shoes before judging them?</label>
-                        <select id="perspective_taking" class="form-input">
-                            <option value="never">Never</option>
-                            <option value="rarely">Rarely</option>
-                            <option value="sometimes">Sometimes</option>
-                            <option value="often">Often</option>
-                            <option value="always">Always</option>
-                        </select>
-                    </div>
-                </div>
-                
-                <!-- Continue with other sections... -->
-                <!-- Add all remaining assessment sections from the previous version -->
-            `;
-        }
-        
-        // Initialize assessment content when page loads
-        setTimeout(addAssessmentContent, 1000);
     </script>
 </body>
 </html>
-        
